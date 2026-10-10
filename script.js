@@ -263,9 +263,27 @@ document.addEventListener('DOMContentLoaded', () => {
             new THREE.CircleGeometry(0.08, 16),
             new THREE.MeshStandardMaterial({ color: 0xFFF2D0, roughness: 0.3 })
         );
-        flashMesh.position.set(-0.26, 1.08, -D / 2 - 0.125);
+        flashMesh.position.set(-0.26, 1.62, -D / 2 - 0.125);
         flashMesh.rotation.y = Math.PI;
         iphoneRoot.add(flashMesh);
+
+        // iPhone Pro Built-in LiDAR Scanner (Dark optical dToF circle on camera plateau)
+        const lidarScannerMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.14, 0.14, 0.12, 32),
+            new THREE.MeshStandardMaterial({ color: 0x181024, metalness: 0.85, roughness: 0.1 })
+        );
+        lidarScannerMesh.rotateX(Math.PI / 2);
+        lidarScannerMesh.position.set(-0.26, 1.08, -D / 2 - 0.115);
+        iphoneRoot.add(lidarScannerMesh);
+
+        // LiDAR Sensor Optical Core Ring
+        const lidarCoreRing = new THREE.Mesh(
+            new THREE.RingGeometry(0.06, 0.12, 24),
+            new THREE.MeshBasicMaterial({ color: 0xBF5AF2, side: THREE.DoubleSide })
+        );
+        lidarCoreRing.position.set(-0.26, 1.08, -D / 2 - 0.176);
+        lidarCoreRing.rotation.y = Math.PI;
+        iphoneRoot.add(lidarCoreRing);
 
         // 5. Front Display Screen Glass
         const screenGeo = new THREE.BoxGeometry(W * 0.95, H * 0.96, 0.015);
@@ -393,6 +411,21 @@ document.addEventListener('DOMContentLoaded', () => {
             opacity: 0.95
         });
 
+        // 3. Emit Optical LiDAR Pulse from Built-in iPhone Pro LiDAR Scanner
+        const lidarWave = new THREE.Mesh(
+            new THREE.TorusGeometry(0.25, 0.02, 16, 32),
+            new THREE.MeshBasicMaterial({ color: 0xBF5AF2, transparent: true, opacity: 0.9 })
+        );
+        lidarWave.position.set(-0.26, 1.08, 0.4);
+        scene.add(lidarWave);
+
+        sonicRings.push({
+            mesh: lidarWave,
+            zSpeed: 0.16,
+            scaleSpeed: 0.06,
+            opacity: 0.9
+        });
+
         // Trigger Audio ping
         emitAudioPing(simState.distanceMeters ? Math.round(440 + (1 - simState.distanceMeters / 4.2) * 500) : 620, 0.09);
     }
@@ -516,6 +549,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (view === 'camera') {
                 camera.position.set(-1.8, 2.2, -4.0);
                 updateInspectionCard('camera');
+            } else if (view === 'lidar') {
+                camera.position.set(-1.2, 1.8, -3.8);
+                updateInspectionCard('lidar');
             }
         });
     });
@@ -570,6 +606,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 { k: 'Tactile Engine', v: 'CoreHaptics Taptic' },
                 { k: 'Cloud Dependency', v: '0% (100% Offline)' }
             ]
+        },
+        lidar: {
+            badge: 'BUILT-IN iPHONE PRO SENSOR',
+            title: 'iPhone Pro Built-in LiDAR Scanner',
+            text: 'Integrated on the camera plateau of iPhone 12 Pro through 16 Pro models. Emits pulsed 940nm near-infrared photons to build a dense 3D point cloud, fusing with acoustic sonar to eliminate single-sensor blind spots.',
+            specs: [
+                { k: 'Technology', v: 'Direct Time-of-Flight (dToF)' },
+                { k: 'Detection Range', v: 'Up to 5.0 meters' },
+                { k: 'Hardware Cost', v: '$0 Extra (iPhone Pro Native)' }
+            ]
         }
     };
 
@@ -597,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const radarCtx = radarCanvas.getContext('2d');
 
     const simState = {
-        mode: 'near-ultrasound',
+        mode: 'fusion', // 'fusion', 'sonar', 'lidar'
         material: 'concrete',
         temperature: 20,
         obsX: 420,
@@ -610,10 +656,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const MATERIAL_DATA = {
-        concrete: { name: 'Concrete Wall', reflect: 0.95, color: '#A0A0B0', desc: 'Concrete Wall: Dense acoustic barrier. 95% sound pressure wave reflected back to iPhone microphones.' },
-        door: { name: 'Wooden Door', reflect: 0.88, color: '#D4A373', desc: 'Wooden Door: Strong specular acoustic echo. High-contrast reflection makes doorway detection reliable.' },
-        curtain: { name: 'Porous Fabric', reflect: 0.22, color: '#BF5AF2', desc: 'Porous Fabric: Absorbs ultrasonic frequencies into fibers. Echou applies Time-Gain Compensation (TGC) to recover faint echoes.' },
-        person: { name: 'Person', reflect: 0.70, color: '#FF9F0A', desc: 'Person: Diffuse acoustic scatter from clothing profile. Multi-frequency chirp ensures continuous tracking.' }
+        concrete: { name: 'Concrete Wall', sonar: 0.95, lidar: 0.90, color: '#A0A0B0', desc: 'Concrete Wall: Dense acoustic barrier and specular optical target. 95% sonar bounce, 90% LiDAR return.' },
+        glass: { name: 'Plate Glass', sonar: 0.94, lidar: 0.04, color: '#64D2FF', desc: 'Plate Glass: 94% ultrasonic echo, 4% optical return! Lasers pass straight through; acoustic sonar prevents hazard!' },
+        curtain: { name: 'Velvet Curtain', sonar: 0.12, lidar: 0.88, color: '#BF5AF2', desc: 'Velvet Curtain: 12% acoustic bounce (absorbed), 88% optical return. Sonar is silenced; LiDAR saves the user!' },
+        person: { name: 'Pedestrian', sonar: 0.72, lidar: 0.78, color: '#FF9F0A', desc: 'Pedestrian: 72% acoustic scatter, 78% optical return. Multi-zone beam profiles moving human profile.' }
     };
 
     function resizeRadar() {
@@ -797,7 +843,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const c = 331.3 + (0.606 * simState.temperature);
         const roundTripMs = ((2 * distanceM) / c) * 1000;
-        const confidence = Math.round(mat.reflect * 100);
+        
+        let confidence = 0;
+        if (simState.mode === 'sonar') {
+            confidence = Math.round(mat.sonar * 100);
+        } else if (simState.mode === 'lidar') {
+            confidence = Math.round(mat.lidar * 100);
+        } else {
+            confidence = Math.min(99, Math.round(Math.max(mat.sonar, mat.lidar) * 100 + 4));
+        }
 
         // Update DOM
         if (coordReadout) coordReadout.textContent = `Range: ${distanceM.toFixed(2)}m • Direction: ${angleDeg}°`;
@@ -826,7 +880,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (dispValidation) {
-            dispValidation.textContent = confidence > 70 ? 'Matched filter peak lock' : 'Time-Gain Compensation (TGC) Boost Active';
+            if (simState.mode === 'fusion') {
+                dispValidation.textContent = confidence > 80 ? 'Dual-sensor validated' : 'Low confidence fallback';
+            } else if (simState.mode === 'sonar') {
+                dispValidation.textContent = confidence > 70 ? 'Ultrasonic echo locked' : 'Acoustic absorption warning!';
+            } else {
+                dispValidation.textContent = confidence > 70 ? 'LiDAR photons locked' : 'Optical pass-through failure!';
+            }
+        }
+
+        // Draw Optical LiDAR Laser Beam (if in fusion or lidar mode)
+        if (simState.mode === 'lidar' || simState.mode === 'fusion') {
+            const beamAlpha = (simState.mode === 'fusion' ? 0.6 : 0.9) * (mat.lidar > 0.2 ? 1 : 0.25);
+            radarCtx.strokeStyle = `rgba(0, 240, 255, ${beamAlpha})`;
+            radarCtx.lineWidth = 2;
+            radarCtx.setLineDash([6, 4]);
+            radarCtx.beginPath();
+            radarCtx.moveTo(deviceX, deviceY);
+            radarCtx.lineTo(simState.obsX, simState.obsY);
+            radarCtx.stroke();
+            radarCtx.setLineDash([]);
+
+            // If glass door in LiDAR mode: show laser pass-through blindspot warning!
+            if (mat.lidar < 0.2) {
+                radarCtx.strokeStyle = 'rgba(0, 240, 255, 0.2)';
+                radarCtx.beginPath();
+                radarCtx.moveTo(simState.obsX, simState.obsY);
+                radarCtx.lineTo(simState.obsX + dx * 0.7, simState.obsY + dy * 0.7);
+                radarCtx.stroke();
+
+                radarCtx.fillStyle = '#FF453A';
+                radarCtx.font = '10px JetBrains Mono';
+                radarCtx.fillText('⚡ LiDAR Optical Pass-Through (Blind) - Sonar saves user!', simState.obsX + 35, simState.obsY);
+            }
         }
 
         // Draw Ultrasonic Waves from iPhone
@@ -844,7 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Collision
             if (!wave.hasCollided && Math.abs(wave.radius - pixelDist) < simState.obsRadius) {
                 wave.hasCollided = true;
-                const count = Math.round(15 * mat.reflect);
+                const count = Math.round(15 * (mat.sonar || 0.8));
                 for (let p = 0; p < count; p++) {
                     simState.particles.push({
                         x: simState.obsX,
@@ -852,7 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         vx: -((dx / pixelDist) * (4 + Math.random() * 4)) + (Math.random() - 0.5) * 2,
                         vy: -((dy / pixelDist) * (4 + Math.random() * 4)) + (Math.random() - 0.5) * 2,
                         life: 1.0,
-                        color: mat.reflect > 0.3 ? '#30D158' : '#FF453A'
+                        color: (mat.sonar || 0.8) > 0.3 ? '#30D158' : '#FF453A'
                     });
                 }
             }
