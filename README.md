@@ -18,6 +18,7 @@
 - **3-Microphone Spatial TDOA**: Measures microsecond Time Difference of Arrival across the iPhone's Bottom Mic, Earpiece Mic, and Rear Camera Mic to determine **Left**, **Center**, and **Right** directional sectors.
 - **100% On-Device Processing**: Powered by Apple Silicon and the Accelerate framework (`vDSP` FFT cross-correlations) with $<18\text{ms}$ latency.
 - **Non-Visual Accessibility**: Communicates proximity and direction through **Apple Taptic Engine** vibration rhythms, **3D Spatial Audio**, and spoken VoiceOver summaries.
+- **Sensor Fusion (Acoustic Sonar + iPhone Pro LiDAR)**: Intelligently cross-validates near-ultrasonic sound waves with the built-in LiDAR scanner on iPhone Pro models. Eliminates single-sensor failure modes (such as transparent glass windows where lasers pass through, or heavy velvet curtains where ultrasound absorbs) with zero external add-ons.
 - **Works in Complete Darkness**: Sound waves operate independently of optical lighting or camera framing.
 
 ---
