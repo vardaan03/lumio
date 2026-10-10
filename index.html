@@ -29,6 +29,7 @@
                 <a href="#iphone-3d" class="nav-item">iPhone 3D Architecture</a>
                 <a href="#pipeline" class="nav-item">Acoustic Pipeline</a>
                 <a href="#simulator" class="nav-item">Spatial Simulator</a>
+                <a href="#sensor-fusion" class="nav-item">Sensor Fusion</a>
                 <a href="#tdoa" class="nav-item">3-Mic TDOA</a>
                 <a href="#roadmap" class="nav-item">Roadmap</a>
             </div>
@@ -123,8 +124,9 @@
                         <span class="preset-label">Hardware View:</span>
                         <button class="preset-tag active" data-view="hero">Perspective</button>
                         <button class="preset-tag" data-view="speakers">Bottom Speakers</button>
-                        <button class="preset-tag" data-view="island">Dynamic Island Mic</button>
+                        <button class="preset-tag" data-view="island">Dynamic Island</button>
                         <button class="preset-tag" data-view="camera">Rear Mic</button>
+                        <button class="preset-tag" data-view="lidar">LiDAR Scanner</button>
                     </div>
                 </div>
 
@@ -214,15 +216,19 @@
                 <!-- Controls Column -->
                 <div class="sim-controls-panel">
                     <div class="control-box">
-                        <label class="box-label">iPHONE EMISSION MODE</label>
+                        <label class="box-label">iPHONE SENSING MODE</label>
                         <div class="toggle-segmented">
-                            <button class="seg-btn active" data-mode="near-ultrasound">
-                                <strong>Near-Ultrasound Chirp</strong>
-                                <small>18,000 &ndash; 22,000 Hz (Inaudible)</small>
+                            <button class="seg-btn active" data-mode="fusion">
+                                <strong>⚡ Sensor Fusion</strong>
+                                <small>Acoustic Sonar + iPhone Pro LiDAR</small>
                             </button>
-                            <button class="seg-btn" data-mode="audible-demo">
-                                <strong>Audible Demo Mode</strong>
-                                <small>4,000 &ndash; 8,000 Hz (Human Hearing)</small>
+                            <button class="seg-btn" data-mode="sonar">
+                                <strong>🔊 Acoustic Sonar Only</strong>
+                                <small>18,000 &ndash; 22,000 Hz Sound Chirps</small>
+                            </button>
+                            <button class="seg-btn" data-mode="lidar">
+                                <strong>💡 Optical LiDAR Only</strong>
+                                <small>iPhone Pro Built-in dToF Scanner</small>
                             </button>
                         </div>
                     </div>
@@ -233,26 +239,26 @@
                             <button class="mat-card active" data-mat="concrete">
                                 <span class="mat-icon">🧱</span>
                                 <span class="mat-name">Concrete Wall</span>
-                                <span class="mat-pct">Specular Mirror</span>
+                                <span class="mat-pct">High Dual Echo</span>
                             </button>
-                            <button class="mat-card" data-mat="door">
-                                <span class="mat-icon">🚪</span>
-                                <span class="mat-name">Wooden Door</span>
-                                <span class="mat-pct">High Echo Return</span>
+                            <button class="mat-card" data-mat="glass">
+                                <span class="mat-icon">🪟</span>
+                                <span class="mat-name">Plate Glass</span>
+                                <span class="mat-pct warning">LiDAR Blind</span>
                             </button>
                             <button class="mat-card" data-mat="curtain">
                                 <span class="mat-icon">🎭</span>
-                                <span class="mat-name">Porous Fabric</span>
-                                <span class="mat-pct warning">Acoustic Damped</span>
+                                <span class="mat-name">Velvet Curtain</span>
+                                <span class="mat-pct warning">Sonar Damped</span>
                             </button>
                             <button class="mat-card" data-mat="person">
                                 <span class="mat-icon">🚶</span>
-                                <span class="mat-name">Person</span>
+                                <span class="mat-name">Pedestrian</span>
                                 <span class="mat-pct">Diffuse Scatter</span>
                             </button>
                         </div>
                         <div class="mat-analysis-box" id="materialExplanation">
-                            Concrete Wall: Dense acoustic barrier. 95% sound pressure wave reflected back to iPhone microphones.
+                            Concrete Wall: Dense acoustic barrier and specular optical target. 95% sonar bounce, 90% LiDAR return.
                         </div>
                     </div>
 
@@ -325,6 +331,79 @@
                                 <span class="tele-big highlight-green" id="dispConfidence">96%</span>
                             </div>
                             <span class="tele-caption" id="dispValidation">Matched filter peak lock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SENSOR FUSION BREAKTHROUGH: SONAR + iPHONE PRO LIDAR -->
+        <section id="sensor-fusion" class="fusion-breakdown-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">THE SENSOR FUSION BREAKTHROUGH</div>
+                <h2 class="section-headline">Acoustic Sonar &plus; Built-in iPhone LiDAR.</h2>
+                <p class="section-desc">
+                    Single sensors have physical blind spots: optical lasers pass straight through transparent glass, while sound waves absorb into thick winter coats. Echou fuses the iPhone's acoustic speakers with the iPhone Pro's built-in LiDAR scanner for 100% environmental coverage &mdash; with zero extra accessories.
+                </p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="bento-card bento-wide">
+                    <div class="bento-tag">PHYSICS CASE STUDY 01</div>
+                    <h3>Glass Doors and Storefronts</h3>
+                    <p>Optical LiDAR emits 940 nm near-infrared laser light. Because clean glass is transparent, the photon beam transmits straight through with less than 4% backscatter, creating a catastrophic false clear.</p>
+                    <div class="comparison-strip">
+                        <div class="comp-col fail">
+                            <span class="comp-badge">Optical LiDAR</span>
+                            <span class="comp-res">FAILED (0% Return &bull; Invisible)</span>
+                        </div>
+                        <div class="comp-col pass">
+                            <span class="comp-badge">Acoustic Sonar (18-22kHz)</span>
+                            <span class="comp-res">DETECTED (94% Acoustic Mirror)</span>
+                        </div>
+                        <div class="comp-col win">
+                            <span class="comp-badge">Echou Sensor Fusion</span>
+                            <span class="comp-res">SAFE &bull; Collision Avoided</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-wide">
+                    <div class="bento-tag">PHYSICS CASE STUDY 02</div>
+                    <h3>Heavy Curtains and Dark Coats</h3>
+                    <p>Fibrous textile surfaces absorb ultrasound pressure waves into their porous weaves, dissipating acoustic energy. However, optical photons reflect crisply off fabric fibers.</p>
+                    <div class="comparison-strip">
+                        <div class="comp-col fail">
+                            <span class="comp-badge">Acoustic Sonar (18-22kHz)</span>
+                            <span class="comp-res">DAMPENED (12% Echo Return)</span>
+                        </div>
+                        <div class="comp-col pass">
+                            <span class="comp-badge">Optical LiDAR</span>
+                            <span class="comp-res">DETECTED (88% Photon Return)</span>
+                        </div>
+                        <div class="comp-col win">
+                            <span class="comp-badge">Echou Sensor Fusion</span>
+                            <span class="comp-res">SAFE &bull; Optical Lock</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-wide">
+                    <div class="bento-tag">PHYSICS CASE STUDY 03</div>
+                    <h3>Overhanging Branches &amp; Overhead Hazards</h3>
+                    <p>Tree branches, signboards, and open truck mirrors cause severe head strikes because white canes only sweep the ground. The iPhone's dual acoustic cone and optical array identify thin branches before impact.</p>
+                    <div class="comparison-strip">
+                        <div class="comp-col pass">
+                            <span class="comp-badge">Optical LiDAR</span>
+                            <span class="comp-res">DETECTED (Multi-Zone Matrix)</span>
+                        </div>
+                        <div class="comp-col pass">
+                            <span class="comp-badge">Acoustic Sonar (18-22kHz)</span>
+                            <span class="comp-res">DETECTED (Upper Earpiece Arc)</span>
+                        </div>
+                        <div class="comp-col win">
+                            <span class="comp-badge">Echou Sensor Fusion</span>
+                            <span class="comp-res">SAFE &bull; Head Protection Alert</span>
                         </div>
                     </div>
                 </div>
