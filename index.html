@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echou — See Space with Sound &bull; 100% iPhone Native Sonar</title>
+    <meta name="description" content="Echou turns the built-in speaker and microphones already in your iPhone into an active spatial sonar. Zero extra hardware. Inaudible 18–22 kHz chirps. Pure on-device software.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="apple-dark">
+    <!-- Ambient Studio Lighting -->
+    <div class="studio-ambient">
+        <div class="ambient-spot ambient-spot-1"></div>
+        <div class="ambient-spot ambient-spot-2"></div>
+    </div>
+
+    <!-- Apple-style Floating Navigation -->
+    <header class="apple-nav-wrapper">
+        <nav class="apple-nav">
+            <div class="nav-brand">
+                <span class="brand-logo-text">Echou</span>
+                <span class="brand-tag">ZERO EXTRA HARDWARE</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#overview" class="nav-item active">Overview</a>
+                <a href="#iphone-3d" class="nav-item">iPhone 3D Architecture</a>
+                <a href="#pipeline" class="nav-item">Acoustic Pipeline</a>
+                <a href="#simulator" class="nav-item">Spatial Simulator</a>
+                <a href="#tdoa" class="nav-item">3-Mic TDOA</a>
+                <a href="#roadmap" class="nav-item">Roadmap</a>
+            </div>
+            <div class="nav-actions">
+                <button class="audio-toggle-chip" id="audioToggleBtn" title="Listen to Sonar Chirp (Audible Demo Pitch)">
+                    <span class="chip-dot" id="audioLed"></span>
+                    <span id="audioLabel">Demo Audio Muted</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="apple-main">
+        <!-- Hero Section -->
+        <section id="overview" class="hero-showcase">
+            <div class="hero-content">
+                <div class="eyebrow-badge">STRICTLY COMMODITY iPHONE HARDWARE &bull; NO ACCESSORIES ATTACHED</div>
+                <h1 class="hero-headline">
+                    See space with sound.<br>
+                    <span class="gradient-headline">Powered entirely by your iPhone.</span>
+                </h1>
+                <p class="hero-body">
+                    Echou transforms the stereo speakers and triple-microphone array already inside your iPhone into an active spatial sonar. By emitting inaudible near-ultrasonic chirps (18–22&nbsp;kHz) and timing the return echoes, blind and low-vision users sense walls, doorways, and obstacles ahead — with <strong>zero extra hardware to buy, carry, or charge</strong>.
+                </p>
+                
+                <div class="hero-cta-group">
+                    <a href="#iphone-3d" class="apple-btn apple-btn-primary">Inspect 3D iPhone Sonar &darr;</a>
+                    <a href="#simulator" class="apple-btn apple-btn-secondary">Test Live Spatial Simulator</a>
+                </div>
+
+                <div class="key-metrics-strip">
+                    <div class="metric-block">
+                        <span class="metric-val">$0<small> extra</small></span>
+                        <span class="metric-key">Hardware Cost</span>
+                    </div>
+                    <div class="metric-separator"></div>
+                    <div class="metric-block">
+                        <span class="metric-val">18–22<small>kHz</small></span>
+                        <span class="metric-key">Inaudible Near-Ultrasound</span>
+                    </div>
+                    <div class="metric-separator"></div>
+                    <div class="metric-block">
+                        <span class="metric-val">3<small> Mics</small></span>
+                        <span class="metric-key">Spatial TDOA Array</span>
+                    </div>
+                    <div class="metric-separator"></div>
+                    <div class="metric-block">
+                        <span class="metric-val">100<small>%</small></span>
+                        <span class="metric-key">On-Device Apple Silicon</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D INTERACTIVE iPHONE MODEL (Apple Product Showcase) -->
+        <section id="iphone-3d" class="showcase-3d-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">BUILT-IN iPHONE HARDWARE EXPLOITATION</div>
+                <h2 class="section-headline">The sonar is already in your pocket.</h2>
+                <p class="section-desc">
+                    Rotate and inspect the 3D iPhone. Echou repurposes the iPhone's existing acoustic transducers — the bottom stereo speaker, the dynamic island earpiece speaker, the 3-microphone array, and the Taptic Engine — entirely through native iOS software.
+                </p>
+            </div>
+
+            <!-- 3D WebGL Canvas Container -->
+            <div class="canvas-3d-wrapper">
+                <div id="threeContainer" class="three-viewport">
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                        <span>Rendering 3D iPhone Architecture...</span>
+                    </div>
+                </div>
+
+                <!-- 3D Interactive Floating Control Dock -->
+                <div class="floating-controls-dock">
+                    <div class="control-pill-group">
+                        <button class="pill-btn active" id="btn3dRotate" title="Toggle Auto-Rotation">
+                            <span class="pill-icon">🔄</span> 360° Orbit
+                        </button>
+                        <button class="pill-btn" id="btn3dChirp" title="Emit 18-22 kHz Sonar Wave">
+                            <span class="pill-icon">📡</span> Emit Sonar Chirp
+                        </button>
+                        <button class="pill-btn" id="btn3dXray" title="Toggle Internal Components X-Ray">
+                            <span class="pill-icon">🔬</span> X-Ray Architecture
+                        </button>
+                        <button class="pill-btn" id="btn3dWireframe" title="Toggle Engineering Wireframe">
+                            <span class="pill-icon">📐</span> Wireframe
+                        </button>
+                    </div>
+
+                    <div class="view-preset-group">
+                        <span class="preset-label">Hardware View:</span>
+                        <button class="preset-tag active" data-view="hero">Perspective</button>
+                        <button class="preset-tag" data-view="speakers">Bottom Speakers</button>
+                        <button class="preset-tag" data-view="island">Dynamic Island Mic</button>
+                        <button class="preset-tag" data-view="camera">Rear Mic</button>
+                    </div>
+                </div>
+
+                <!-- 3D Component Inspection Card -->
+                <div class="inspect-card" id="inspectCard">
+                    <div class="card-status-bar">
+                        <span class="status-live-dot"></span>
+                        <span id="inspectBadge">BUILT-IN COMPONENT 01</span>
+                    </div>
+                    <h3 id="inspectTitle">iPhone Bottom Stereo Speaker</h3>
+                    <p id="inspectText">
+                        Fires 18,000–22,000 Hz frequency-modulated linear chirps (3–10ms duration) into the forward acoustic field. Inaudible to adult human ears, safe, and perfectly timed to 48 kHz native DAC sampling.
+                    </p>
+                    <div class="specs-mini-table" id="inspectSpecs">
+                        <div class="spec-row">
+                            <span class="sk">Chirp Bandwidth</span>
+                            <span class="sv">18–22 kHz (4 kHz B)</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="sk">Range Resolution</span>
+                            <span class="sv">~4.3 cm Theoretical</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="sk">Hardware Needed</span>
+                            <span class="sv">0 extra (iPhone built-in)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACOUSTIC PIPELINE EXPLAINED -->
+        <section id="pipeline" class="pipeline-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">NATIVE iOS SOFTWARE ARCHITECTURE</div>
+                <h2 class="section-headline">How pure software creates a sonar.</h2>
+                <p class="section-desc">
+                    By bypassing Apple's voice noise-suppression algorithms and processing raw 48 kHz uncompressed audio buffers through Accelerate DSP, Echou achieves millisecond acoustic ranging.
+                </p>
+            </div>
+
+            <div class="pipeline-flow-grid">
+                <div class="flow-card">
+                    <div class="flow-num">01</div>
+                    <h4>Chirp Generation</h4>
+                    <p>Linear frequency sweep $s(t) = w(t) \cdot \sin(2\pi (f_0 t + \frac{k}{2} t^2))$ with Hann edge tapering to eliminate audible clicks.</p>
+                    <span class="flow-tag">AVAudioEngine &bull; 48kHz</span>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-num">02</div>
+                    <h4>Raw Audio Capture</h4>
+                    <p>Requests <code>.measurement</code> audio session mode, disabling AGC and noise cancellation that would otherwise discard ultrasonic echoes.</p>
+                    <span class="flow-tag">AVAudioSession &bull; Zero Filter</span>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-num">03</div>
+                    <h4>Matched Filter (DSP)</h4>
+                    <p>Cross-correlates received microphone streams against the transmitted chirp template using FFT. Generates sharp correlation peaks out of ambient noise.</p>
+                    <span class="flow-tag">vDSP Accelerate &bull; A-Series Core</span>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-num">04</div>
+                    <h4>3-Mic TDOA Triangulation</h4>
+                    <p>Measures microsecond arrival differences across Bottom, Top Earpiece, and Rear mics to determine Left vs. Center vs. Right obstacle direction.</p>
+                    <span class="flow-tag">&Delta;t = (d &times; sin&theta;) &divide; c</span>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-num">05</div>
+                    <h4>Taptic &amp; Voice Feedback</h4>
+                    <p>Delivers proximity cues via Apple Taptic Engine vibration cadences, 3D Spatial Audio ear-con tones, and spoken VoiceOver announcements.</p>
+                    <span class="flow-tag">CoreHaptics &bull; Zero Screen Reliance</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE SPATIAL RADAR SIMULATOR -->
+        <section id="simulator" class="spatial-sim-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">INTERACTIVE SONAR FIELD</div>
+                <h2 class="section-headline">Simulate the iPhone's acoustic sweep.</h2>
+                <p class="section-desc">
+                    Drag the obstacle around the room. Watch the iPhone's bottom and top speakers broadcast 18–22 kHz near-ultrasound, time the return echo, and resolve range and direction.
+                </p>
+            </div>
+
+            <div class="sim-dashboard-layout">
+                <!-- Controls Column -->
+                <div class="sim-controls-panel">
+                    <div class="control-box">
+                        <label class="box-label">iPHONE EMISSION MODE</label>
+                        <div class="toggle-segmented">
+                            <button class="seg-btn active" data-mode="near-ultrasound">
+                                <strong>Near-Ultrasound Chirp</strong>
+                                <small>18,000 &ndash; 22,000 Hz (Inaudible)</small>
+                            </button>
+                            <button class="seg-btn" data-mode="audible-demo">
+                                <strong>Audible Demo Mode</strong>
+                                <small>4,000 &ndash; 8,000 Hz (Human Hearing)</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-box">
+                        <label class="box-label">OBSTACLE REFLECTION PHYSICS</label>
+                        <div class="materials-grid">
+                            <button class="mat-card active" data-mat="concrete">
+                                <span class="mat-icon">🧱</span>
+                                <span class="mat-name">Concrete Wall</span>
+                                <span class="mat-pct">Specular Mirror</span>
+                            </button>
+                            <button class="mat-card" data-mat="door">
+                                <span class="mat-icon">🚪</span>
+                                <span class="mat-name">Wooden Door</span>
+                                <span class="mat-pct">High Echo Return</span>
+                            </button>
+                            <button class="mat-card" data-mat="curtain">
+                                <span class="mat-icon">🎭</span>
+                                <span class="mat-name">Porous Fabric</span>
+                                <span class="mat-pct warning">Acoustic Damped</span>
+                            </button>
+                            <button class="mat-card" data-mat="person">
+                                <span class="mat-icon">🚶</span>
+                                <span class="mat-name">Person</span>
+                                <span class="mat-pct">Diffuse Scatter</span>
+                            </button>
+                        </div>
+                        <div class="mat-analysis-box" id="materialExplanation">
+                            Concrete Wall: Dense acoustic barrier. 95% sound pressure wave reflected back to iPhone microphones.
+                        </div>
+                    </div>
+
+                    <div class="control-box">
+                        <div class="slider-row">
+                            <label class="box-label">TEMPERATURE CALIBRATION</label>
+                            <span class="val-pill" id="tempValText">20°C (343.4 m/s)</span>
+                        </div>
+                        <input type="range" min="-10" max="45" value="20" id="tempSliderInput" class="apple-slider">
+                        <small class="slider-subtext">Compensates acoustic velocity shift ($c = 331.3 + 0.606 \times T$).</small>
+                    </div>
+
+                    <button class="fire-sweep-btn" id="fireSweepBtn">
+                        <span>📡 Trigger iPhone Chirp Sweep</span>
+                    </button>
+                </div>
+
+                <!-- Radar Stage -->
+                <div class="sim-stage-panel">
+                    <div class="radar-viewport-card">
+                        <div class="radar-top-bar">
+                            <div class="radar-live-status">
+                                <span class="pulse-indicator"></span>
+                                <span>iPHONE ACOUSTIC SWEEP &bull; 48 kHz SAMPLE CLOCK</span>
+                            </div>
+                            <div class="radar-coord-readout" id="coordReadout">Range: 2.10m &bull; Angle: 0.0°</div>
+                        </div>
+
+                        <!-- 2D High-Resolution Spatial Radar Canvas -->
+                        <canvas id="spatialRadarCanvas"></canvas>
+
+                        <div class="drag-instruction-bar">
+                            <span>✦ Drag the obstacle with your mouse or finger anywhere inside the radar field</span>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Strip -->
+                    <div class="telemetry-deck">
+                        <div class="tele-tile">
+                            <span class="tele-title">CALCULATED RANGE</span>
+                            <div class="tele-number-wrap">
+                                <span class="tele-big" id="dispDistance">2.10</span>
+                                <span class="tele-unit">m</span>
+                            </div>
+                            <div class="meter-bar-track">
+                                <div class="meter-bar-fill" id="dispDistBar" style="width: 50%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="tele-tile">
+                            <span class="tele-title">ROUND-TRIP DELAY</span>
+                            <div class="tele-number-wrap">
+                                <span class="tele-big highlight-cyan" id="dispTime">12.2</span>
+                                <span class="tele-unit">ms</span>
+                            </div>
+                            <span class="tele-caption" id="dispFormula">d = (343.4 &times; 0.0122) &divide; 2</span>
+                        </div>
+
+                        <div class="tele-tile">
+                            <span class="tele-title">SPATIAL SECTOR</span>
+                            <div class="tele-number-wrap">
+                                <span class="zone-pill pill-caution" id="dispSector">CENTER (Ahead)</span>
+                            </div>
+                            <span class="tele-caption" id="dispHaptic">Taptic Engine: Balanced center tap</span>
+                        </div>
+
+                        <div class="tele-tile">
+                            <span class="tele-title">CORRELATION CONFIDENCE</span>
+                            <div class="tele-number-wrap">
+                                <span class="tele-big highlight-green" id="dispConfidence">96%</span>
+                            </div>
+                            <span class="tele-caption" id="dispValidation">Matched filter peak lock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3-MICROPHONE TDOA MULTILATERATION -->
+        <section id="tdoa" class="tdoa-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">DIRECTIONAL SENSING WITHOUT EXTRA SENSORS</div>
+                <h2 class="section-headline">Resolving left vs. right with iPhone mics.</h2>
+                <p class="section-desc">
+                    How does a phone know if an obstacle is to your left or right? By measuring the fraction-of-a-millisecond time difference of arrival (&Delta;t) between the iPhone's bottom and top microphones.
+                </p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="bento-card">
+                    <div class="bento-tag">PHYSICAL PRINCIPLE</div>
+                    <h3>Time Difference of Arrival (TDOA)</h3>
+                    <p>Sound travels at ~343 mm/ms. Across the ~145mm baseline distance between the iPhone's bottom microphone and top earpiece microphone, an obstacle at an angle creates a measurable time offset:</p>
+                    <div class="formula-box">
+                        <code>&Delta;t = (d_mics &times; sin &theta;) &divide; c</code>
+                    </div>
+                    <p>At 48,000 Hz, each audio sample is ~20.8 microseconds long. A 100-microsecond delay between microphones spans ~5 distinct samples, easily resolved via phase cross-correlation!</p>
+                </div>
+
+                <div class="bento-card">
+                    <div class="bento-tag">COREHAPTICS &amp; 3D AUDIO</div>
+                    <h3>Communicating Direction to Blind Users</h3>
+                    <p>Echou never forces users to look at a screen. Instead, spatial information is translated into two hands-free sensory modes:</p>
+                    <ul class="feedback-list">
+                        <li><strong>Taptic Engine Cadence:</strong> Rapid double-taps on the palm or chest indicate emergency stops; gentle periodic pulses indicate a safe forward buffer.</li>
+                        <li><strong>3D Spatial Audio Beeps:</strong> When wearing AirPods or bone-conduction headphones, echoes are panned into binaural 3D space so the obstacle sounds like it's physically sitting in the room to your left or right.</li>
+                        <li><strong>Voice Announcements:</strong> Spoken distance summaries ("Wall 1.5 meters ahead, door to your right") via iOS speech synthesis.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROADMAP TIMELINE -->
+        <section id="roadmap" class="roadmap-section">
+            <div class="section-title-wrap">
+                <div class="section-eyebrow">DEVELOPMENT MILESTONES</div>
+                <h2 class="section-headline">Roadmap to the App Store.</h2>
+                <p class="section-desc">
+                    Engineered by Parth Jaina, Vardaan Sharma, Manoj B S, and Tharun B with the blind and low-vision community.
+                </p>
+            </div>
+
+            <div class="roadmap-track">
+                <div class="road-step">
+                    <span class="step-num">01</span>
+                    <span class="step-time">Phase 1</span>
+                    <h4>Acoustic Calibration</h4>
+                    <p>Benchmarking 18–22 kHz speaker output and mic linearity across iPhone models. Calibrating direct speaker-to-mic leakage cancellation.</p>
+                </div>
+                <div class="road-step">
+                    <span class="step-num">02</span>
+                    <span class="step-time">Phase 2</span>
+                    <h4>Accelerate DSP Core</h4>
+                    <p>Writing real-time FFT matched filtering and constant false alarm rate (CFAR) peak detection in Swift using Apple's Accelerate framework.</p>
+                </div>
+                <div class="road-step">
+                    <span class="step-num">03</span>
+                    <span class="step-time">Phase 3</span>
+                    <h4>3-Mic TDOA Triangulation</h4>
+                    <p>Implementing multi-channel audio capture via AVAudioEngine to resolve Left, Center, and Right directional sectors.</p>
+                </div>
+                <div class="road-step">
+                    <span class="step-num">04</span>
+                    <span class="step-time">Phase 4</span>
+                    <h4>Accessible UX &amp; Haptics</h4>
+                    <p>Testing with blind users to refine Taptic Engine vibration rhythms, 3D audio cues, and voice feedback without sensory overload.</p>
+                </div>
+                <div class="road-step">
+                    <span class="step-num">05</span>
+                    <span class="step-time">Phase 5</span>
+                    <h4>Public App &amp; Spatial API</h4>
+                    <p>Releasing the free accessibility app on the App Store and publishing an open iOS Spatial Sonar SDK for third-party AR and navigation apps.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Apple-style Clean Footer -->
+    <footer class="apple-footer">
+        <div class="footer-inner">
+            <div class="footer-top-row">
+                <div class="footer-brand-col">
+                    <span class="footer-logo">Echou</span>
+                    <p>See space with sound. An active software sonar running strictly on commodity iPhone hardware. Zero accessories attached.</p>
+                </div>
+                <div class="footer-disclaimer-box">
+                    <strong>Accessibility Notice:</strong> Echou is an auxiliary spatial awareness tool and does not replace a white cane, guide dog, or orientation-and-mobility training.
+                </div>
+            </div>
+            <div class="footer-bottom-row">
+                <span>&copy; 2026 Echou Project &bull; Parth Jaina &bull; Vardaan Sharma &bull; Manoj B S &bull; Tharun B</span>
+                <span>Open accessibility software prototype.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three.js Local Engine & OrbitControls -->
+    <script src="lib/three.min.js"></script>
+    <script src="lib/OrbitControls.js"></script>
+    <!-- Flagship Application Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
